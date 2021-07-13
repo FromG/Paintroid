@@ -33,11 +33,11 @@ import kotlin.math.min
 private const val BUNDLE_TOOL_DRAWING_BITMAP = "BUNDLE_TOOL_DRAWING_BITMAP"
 
 class ImportTool(
-    contextCallback: ContextCallback,
-    toolOptionsViewController: ToolOptionsVisibilityController,
-    toolPaint: ToolPaint,
-    workspace: Workspace,
-    commandManager: CommandManager
+        contextCallback: ContextCallback,
+        toolOptionsViewController: ToolOptionsVisibilityController,
+        toolPaint: ToolPaint,
+        workspace: Workspace,
+        commandManager: CommandManager, override var drawTime: Long
 ) : BaseToolWithRectangleShape(
     contextCallback, toolOptionsViewController, toolPaint, workspace, commandManager
 ) {

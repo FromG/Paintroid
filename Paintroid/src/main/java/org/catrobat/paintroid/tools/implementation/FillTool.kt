@@ -34,12 +34,12 @@ const val DEFAULT_TOLERANCE_IN_PERCENT = 12
 const val MAX_ABSOLUTE_TOLERANCE = 510
 
 class FillTool(
-    fillToolOptionsView: FillToolOptionsView,
-    contextCallback: ContextCallback,
-    toolOptionsViewController: ToolOptionsVisibilityController,
-    toolPaint: ToolPaint,
-    workspace: Workspace,
-    commandManager: CommandManager
+        fillToolOptionsView: FillToolOptionsView,
+        contextCallback: ContextCallback,
+        toolOptionsViewController: ToolOptionsVisibilityController,
+        toolPaint: ToolPaint,
+        workspace: Workspace,
+        commandManager: CommandManager, override var drawTime: Long
 ) : BaseTool(
     contextCallback,
     toolOptionsViewController,

@@ -34,12 +34,12 @@ import org.catrobat.paintroid.tools.options.BrushToolOptionsView
 import org.catrobat.paintroid.tools.options.ToolOptionsVisibilityController
 
 class LineTool(
-    private val brushToolOptionsView: BrushToolOptionsView,
-    contextCallback: ContextCallback,
-    toolOptionsViewController: ToolOptionsVisibilityController,
-    toolPaint: ToolPaint,
-    workspace: Workspace,
-    commandManager: CommandManager
+        private val brushToolOptionsView: BrushToolOptionsView,
+        contextCallback: ContextCallback,
+        toolOptionsViewController: ToolOptionsVisibilityController,
+        toolPaint: ToolPaint,
+        workspace: Workspace,
+        commandManager: CommandManager, override var drawTime: Long
 ) : BaseTool(contextCallback, toolOptionsViewController, toolPaint, workspace, commandManager) {
 
     @VisibleForTesting

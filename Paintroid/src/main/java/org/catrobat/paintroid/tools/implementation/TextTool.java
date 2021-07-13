@@ -307,4 +307,14 @@ public class TextTool extends BaseToolWithRectangleShape {
 		super.changePaintColor(color);
 		changeTextColor();
 	}
+
+	@Override
+	public long getDrawTime() {
+		return 0;
+	}
+
+	@Override
+	public void setDrawTime(long drawTime) {
+
+	}
 }

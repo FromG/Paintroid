@@ -32,18 +32,20 @@ import org.catrobat.paintroid.tools.Workspace
 import org.catrobat.paintroid.tools.common.CommonBrushChangedListener
 import org.catrobat.paintroid.tools.common.CommonBrushPreviewListener
 import org.catrobat.paintroid.tools.common.MOVE_TOLERANCE
+import org.catrobat.paintroid.tools.helper.AdvancedSettingsAlgorithms
 import org.catrobat.paintroid.tools.options.BrushToolOptionsView
 import org.catrobat.paintroid.tools.options.ToolOptionsVisibilityController
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.sqrt
 
 open class BrushTool(
-    private val brushToolOptionsView: BrushToolOptionsView,
-    contextCallback: ContextCallback,
-    toolOptionsViewController: ToolOptionsVisibilityController,
-    toolPaint: ToolPaint,
-    workspace: Workspace,
-    commandManager: CommandManager
+        private val brushToolOptionsView: BrushToolOptionsView,
+        contextCallback: ContextCallback,
+        toolOptionsViewController: ToolOptionsVisibilityController,
+        toolPaint: ToolPaint,
+        workspace: Workspace,
+        commandManager: CommandManager, override var drawTime: Long
 ) : BaseTool(contextCallback, toolOptionsViewController, toolPaint, workspace, commandManager) {
     protected open val previewPaint: Paint
         get() = toolPaint.previewPaint
@@ -57,18 +59,20 @@ open class BrushTool(
     @VisibleForTesting
     @JvmField
     var pathToDraw: Path = Path()
-    private var initialEventCoordinate: PointF? = null
+    private var initialEventCoordinate: PointF? = PointF(0f, 0f)
     private var pathInsideBitmap = false
     private val drawToolMovedDistance = PointF(0f, 0f)
+
+    private val pointArray = mutableListOf<PointF>()
 
     init {
         pathToDraw.incReserve(1)
         brushToolOptionsView.setBrushChangedListener(CommonBrushChangedListener(this))
         brushToolOptionsView.setBrushPreviewListener(
-            CommonBrushPreviewListener(
-                toolPaint,
-                toolType
-            )
+                CommonBrushPreviewListener(
+                        toolPaint,
+                        toolType
+                )
         )
         brushToolOptionsView.setCurrentPaint(toolPaint.paint)
     }
@@ -88,6 +92,7 @@ open class BrushTool(
         previousEventCoordinate = PointF(coordinate.x, coordinate.y)
         pathToDraw.moveTo(coordinate.x, coordinate.y)
         drawToolMovedDistance.set(0f, 0f)
+        pointArray.add(PointF(coordinate.x, coordinate.y))
         pathInsideBitmap = workspace.contains(coordinate)
         return true
     }
@@ -100,9 +105,10 @@ open class BrushTool(
             pathToDraw.quadTo(it.x, it.y, coordinate.x, coordinate.y)
             pathToDraw.incReserve(1)
             drawToolMovedDistance.set(
-                drawToolMovedDistance.x + abs(coordinate.x - it.x),
-                drawToolMovedDistance.y + abs(coordinate.y - it.y)
+                    drawToolMovedDistance.x + abs(coordinate.x - it.x),
+                    drawToolMovedDistance.y + abs(coordinate.y - it.y)
             )
+            pointArray.add(PointF(coordinate.x, coordinate.y))
             it.set(coordinate.x, coordinate.y)
         }
         if (!pathInsideBitmap && workspace.contains(coordinate)) {
@@ -122,8 +128,8 @@ open class BrushTool(
 
         previousEventCoordinate?.let {
             drawToolMovedDistance.set(
-                drawToolMovedDistance.x + abs(coordinate.x - it.x),
-                drawToolMovedDistance.y + abs(coordinate.y - it.y)
+                    drawToolMovedDistance.x + abs(coordinate.x - it.x),
+                    drawToolMovedDistance.y + abs(coordinate.y - it.y)
             )
         }
 
@@ -139,6 +145,7 @@ open class BrushTool(
 
     override fun resetInternalState() {
         pathToDraw.rewind()
+        pointArray.clear()
         initialEventCoordinate = null
         previousEventCoordinate = null
     }
@@ -149,16 +156,31 @@ open class BrushTool(
     }
 
     private fun eventCoordinatesAreNull(): Boolean =
-        initialEventCoordinate == null || previousEventCoordinate == null
+            initialEventCoordinate == null || previousEventCoordinate == null
 
     private fun addPathCommand(coordinate: PointF): Boolean {
         pathToDraw.lineTo(coordinate.x, coordinate.y)
+
         if (!pathInsideBitmap) {
             resetInternalState(StateChange.RESET_INTERNAL_STATE)
             return false
         }
-        val command = commandFactory.createPathCommand(bitmapPaint, pathToDraw)
-        commandManager.addCommand(command)
+
+        val distance = sqrt(((coordinate.x - initialEventCoordinate?.x!!) * (coordinate.x - initialEventCoordinate?.x!!) +
+                (coordinate.y - initialEventCoordinate?.y!!)).toDouble())
+        val speed = distance / drawTime
+
+        if(speed < 0.2) {
+            val command = commandFactory.createPathCommand(bitmapPaint, pathToDraw)
+            commandManager.addCommand(command)
+        } else {
+            val pathNew = AdvancedSettingsAlgorithms.smoothingAlgorithm(pointArray)
+
+            val command = commandFactory.createPathCommand(bitmapPaint, pathNew)
+            commandManager.addCommand(command)
+        }
+
+        pointArray.clear()
         return true
     }
 
@@ -167,6 +189,8 @@ open class BrushTool(
             resetInternalState(StateChange.RESET_INTERNAL_STATE)
             return false
         }
+
+        pointArray.clear()
         val command = commandFactory.createPointCommand(bitmapPaint, coordinate)
         commandManager.addCommand(command)
         return true

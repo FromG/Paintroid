@@ -41,12 +41,12 @@ private const val BUNDLE_SHAPE_DRAW_TYPE = "SHAPE_DRAW_TYPE"
 private const val BUNDLE_OUTLINE_WIDTH = "OUTLINE_WIDTH"
 
 class ShapeTool(
-    shapeToolOptionsView: ShapeToolOptionsView,
-    contextCallback: ContextCallback,
-    toolOptionsViewController: ToolOptionsVisibilityController,
-    toolPaint: ToolPaint,
-    workspace: Workspace,
-    commandManager: CommandManager
+        shapeToolOptionsView: ShapeToolOptionsView,
+        contextCallback: ContextCallback,
+        toolOptionsViewController: ToolOptionsVisibilityController,
+        toolPaint: ToolPaint,
+        workspace: Workspace,
+        commandManager: CommandManager, override var drawTime: Long
 ) : BaseToolWithRectangleShape(
     contextCallback, toolOptionsViewController, toolPaint, workspace, commandManager
 ) {
