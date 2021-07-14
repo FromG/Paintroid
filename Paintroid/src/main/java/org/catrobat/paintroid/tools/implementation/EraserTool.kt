@@ -29,12 +29,13 @@ import org.catrobat.paintroid.tools.options.BrushToolOptionsView
 import org.catrobat.paintroid.tools.options.ToolOptionsVisibilityController
 
 class EraserTool(
-        brushToolOptionsView: BrushToolOptionsView,
-        contextCallback: ContextCallback,
-        toolOptionsViewController: ToolOptionsVisibilityController,
-        toolPaint: ToolPaint,
-        workspace: Workspace,
-        commandManager: CommandManager, drawTime: Long
+    brushToolOptionsView: BrushToolOptionsView,
+    contextCallback: ContextCallback,
+    toolOptionsViewController: ToolOptionsVisibilityController,
+    toolPaint: ToolPaint,
+    workspace: Workspace,
+    commandManager: CommandManager,
+    drawTime: Long
 ) : BrushTool(
     brushToolOptionsView,
     contextCallback,

@@ -40,10 +40,10 @@ import org.catrobat.paintroid.tools.helper.AdvancedSettingsAlgorithms;
 import org.catrobat.paintroid.tools.options.BrushToolOptionsView;
 import org.catrobat.paintroid.tools.options.ToolOptionsVisibilityController;
 
-import androidx.annotation.VisibleForTesting;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.VisibleForTesting;
 
 import static org.catrobat.paintroid.tools.common.ConstantsKt.MOVE_TOLERANCE;
 
@@ -298,15 +298,15 @@ public class CursorTool extends BaseToolWithShape {
 		bounds.inset(-toolPaint.getStrokeWidth(), -toolPaint.getStrokeWidth());
 
 		if (workspace.intersectsWith(bounds)) {
-			double distance = Math.sqrt((coordinate.x - initialEventCoordinate.x) * (coordinate.x - initialEventCoordinate.x) +
-					(coordinate.y - initialEventCoordinate.y));
+			double distance = Math.sqrt((coordinate.x - initialEventCoordinate.x) * (coordinate.x - initialEventCoordinate.x)
+					+ (coordinate.y - initialEventCoordinate.y));
 			double speed = distance / drawTime;
 
-			if(speed < 0.2) {
+			if (speed < 0.2) {
 				Command command = commandFactory.createPathCommand(toolPaint.getPaint(), pathToDraw);
 				commandManager.addCommand(command);
 			} else {
-				Path pathNew = AdvancedSettingsAlgorithms.Companion.smoothingAlgorithm(pointArray);
+				Path pathNew = AdvancedSettingsAlgorithms.smoothingAlgorithm(pointArray);
 				pathNew.computeBounds(bounds, true);
 
 				Command command = commandFactory.createPathCommand(toolPaint.getPaint(), pathNew);

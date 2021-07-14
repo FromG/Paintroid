@@ -48,12 +48,13 @@ private const val STROKE_WIDTH = 5f
 private const val CONSTANT_1 = 0.5f
 
 class SprayTool(
-        var stampToolOptionsView: SprayToolOptionsView,
-        override var contextCallback: ContextCallback,
-        toolOptionsViewController: ToolOptionsVisibilityController,
-        toolPaint: ToolPaint,
-        workspace: Workspace,
-        commandManager: CommandManager, override var drawTime: Long
+    var stampToolOptionsView: SprayToolOptionsView,
+    override var contextCallback: ContextCallback,
+    toolOptionsViewController: ToolOptionsVisibilityController,
+    toolPaint: ToolPaint,
+    workspace: Workspace,
+    commandManager: CommandManager,
+    override var drawTime: Long
 ) : BaseTool(contextCallback, toolOptionsViewController, toolPaint, workspace, commandManager) {
 
     @VisibleForTesting

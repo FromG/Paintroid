@@ -387,7 +387,5 @@ public class TransformTool extends BaseToolWithRectangleShape {
 	}
 
 	@Override
-	public void setDrawTime(long drawTime) {
-
-	}
+	public void setDrawTime(long drawTime) { }
 }

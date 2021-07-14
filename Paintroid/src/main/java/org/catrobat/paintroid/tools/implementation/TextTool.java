@@ -314,7 +314,5 @@ public class TextTool extends BaseToolWithRectangleShape {
 	}
 
 	@Override
-	public void setDrawTime(long drawTime) {
-
-	}
+	public void setDrawTime(long drawTime) { }
 }

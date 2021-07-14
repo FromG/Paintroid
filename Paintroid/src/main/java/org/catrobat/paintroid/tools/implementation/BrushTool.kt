@@ -40,12 +40,13 @@ import kotlin.math.max
 import kotlin.math.sqrt
 
 open class BrushTool(
-        private val brushToolOptionsView: BrushToolOptionsView,
-        contextCallback: ContextCallback,
-        toolOptionsViewController: ToolOptionsVisibilityController,
-        toolPaint: ToolPaint,
-        workspace: Workspace,
-        commandManager: CommandManager, override var drawTime: Long
+    private val brushToolOptionsView: BrushToolOptionsView,
+    contextCallback: ContextCallback,
+    toolOptionsViewController: ToolOptionsVisibilityController,
+    toolPaint: ToolPaint,
+    workspace: Workspace,
+    commandManager: CommandManager,
+    override var drawTime: Long
 ) : BaseTool(contextCallback, toolOptionsViewController, toolPaint, workspace, commandManager) {
     protected open val previewPaint: Paint
         get() = toolPaint.previewPaint
@@ -69,10 +70,10 @@ open class BrushTool(
         pathToDraw.incReserve(1)
         brushToolOptionsView.setBrushChangedListener(CommonBrushChangedListener(this))
         brushToolOptionsView.setBrushPreviewListener(
-                CommonBrushPreviewListener(
-                        toolPaint,
-                        toolType
-                )
+            CommonBrushPreviewListener(
+                toolPaint,
+                toolType
+            )
         )
         brushToolOptionsView.setCurrentPaint(toolPaint.paint)
     }
@@ -105,8 +106,8 @@ open class BrushTool(
             pathToDraw.quadTo(it.x, it.y, coordinate.x, coordinate.y)
             pathToDraw.incReserve(1)
             drawToolMovedDistance.set(
-                    drawToolMovedDistance.x + abs(coordinate.x - it.x),
-                    drawToolMovedDistance.y + abs(coordinate.y - it.y)
+                drawToolMovedDistance.x + abs(coordinate.x - it.x),
+                drawToolMovedDistance.y + abs(coordinate.y - it.y)
             )
             pointArray.add(PointF(coordinate.x, coordinate.y))
             it.set(coordinate.x, coordinate.y)
@@ -128,8 +129,8 @@ open class BrushTool(
 
         previousEventCoordinate?.let {
             drawToolMovedDistance.set(
-                    drawToolMovedDistance.x + abs(coordinate.x - it.x),
-                    drawToolMovedDistance.y + abs(coordinate.y - it.y)
+                drawToolMovedDistance.x + abs(coordinate.x - it.x),
+                drawToolMovedDistance.y + abs(coordinate.y - it.y)
             )
         }
 
@@ -156,7 +157,7 @@ open class BrushTool(
     }
 
     private fun eventCoordinatesAreNull(): Boolean =
-            initialEventCoordinate == null || previousEventCoordinate == null
+        initialEventCoordinate == null || previousEventCoordinate == null
 
     private fun addPathCommand(coordinate: PointF): Boolean {
         pathToDraw.lineTo(coordinate.x, coordinate.y)
@@ -169,8 +170,9 @@ open class BrushTool(
         val distance = sqrt(((coordinate.x - initialEventCoordinate?.x!!) * (coordinate.x - initialEventCoordinate?.x!!) +
                 (coordinate.y - initialEventCoordinate?.y!!)).toDouble())
         val speed = distance / drawTime
+        val threshhold = 0.2
 
-        if(speed < 0.2) {
+        if (speed < threshhold) {
             val command = commandFactory.createPathCommand(bitmapPaint, pathToDraw)
             commandManager.addCommand(command)
         } else {

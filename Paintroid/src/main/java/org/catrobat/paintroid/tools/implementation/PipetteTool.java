@@ -99,7 +99,5 @@ public class PipetteTool extends BaseTool {
 	}
 
 	@Override
-	public void setDrawTime(long drawTime) {
-
-	}
+	public void setDrawTime(long drawTime) { }
 }
